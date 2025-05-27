@@ -6,9 +6,11 @@ export async function POST(req: NextRequest) {
   try {
     const form = await req.formData();
     const category = form.get("category")?.toString() || "";
-    const file = form.get("file") as File;
+    const file = form.get("file");
+    // File 타입 체크
+    const fileObj = file instanceof File ? file : null;
 
-    const statement = file ? await file.text() : "";
+    const statement = fileObj ? await fileObj.text() : "";
 
     if (!category || !statement) {
       return NextResponse.json({ error: "카테고리와 진술문을 입력하세요." }, { status: 400 });
@@ -38,11 +40,19 @@ export async function POST(req: NextRequest) {
       })
     });
 
-    const json = await gptRes.json();
+    // 타입 안전하게 지정
+    type GptResponse = {
+      choices?: Array<{ message?: { content?: string } }>;
+      error?: string;
+    };
+
+    const json: GptResponse = await gptRes.json();
     const result = json.choices?.[0]?.message?.content?.trim() || "";
 
     return NextResponse.json({ result });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message || "알 수 없는 오류" }, { status: 500 });
+  } catch (e) {
+    // e는 unknown 타입이기 때문에, 안전하게 처리
+    const errorMsg = e instanceof Error ? e.message : "알 수 없는 오류";
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
