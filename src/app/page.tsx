@@ -207,37 +207,36 @@ export default function HomePage() {
     }
   }
 
-  async function handleDownloadDOCX(content: string) {
-    try {
-      const idToken = await fetch("/api/token").then((res) => res.text());
-      const res = await fetch("/api/download-docx", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ report: content }),
-      });
+  const downloadDocx = async (content: string, fileName: string) => {
+  try {
+    const res = await fetch("/api/download-docx", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content, fileName }),
+    });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        setErrorMsg("Download denied: " + (errorData.reason || "unknown error"));
-        return;
-      }
-
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `Lawrithm_Report_${Date.now()}.docx`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (e) {
-      setErrorMsg("DOCX download failed.");
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.reason || "Failed to download DOCX");
     }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName || "Lawrithm_Report.docx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download error:", error);
+    alert("Failed to download report.");
   }
+};
+
 
   function handleProSampleClick() {
     window.location.href = "/pro-sample";
@@ -713,7 +712,7 @@ export default function HomePage() {
               {reportContent}
               <div style={{ marginTop: 18, textAlign: "right" }}>
                 <button
-                  onClick={() => handleDownloadDOCX(reportContent)}
+                  onClick={() => downloadDocx(reportContent, "Lawrithm_Report.docx")}
                   style={{
                     padding: "11px 26px",
                     background: "linear-gradient(90deg,#8ed6ff,#436fff)",
