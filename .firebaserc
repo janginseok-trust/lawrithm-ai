@@ -1,0 +1,5 @@
+{
+  "projects": {
+    "default": "lawrithm-ai" // 실제 Firebase 프로젝트 ID로 바꿔
+  }
+}

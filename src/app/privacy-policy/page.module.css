@@ -1,0 +1,28 @@
+.container {
+  max-width: 820px;
+  margin: 40px auto;
+  padding: 32px;
+  border-radius: 16px;
+  background: #181821;
+  color: #fff;
+  font-family: 'Noto Serif KR', serif;
+}
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+.text {
+  margin-top: 12px;
+}
+.smallText {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #666;
+}

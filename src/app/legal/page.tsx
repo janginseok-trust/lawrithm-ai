@@ -1,20 +1,18 @@
-// src/app/legal/page.tsx
-
 'use client'
 
 import { useEffect, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
+// KR(한국) 제거, 국가명 영어로만
 const COUNTRY_LIST = [
-  { code: 'AU', name: '호주' },
-  { code: 'CA', name: '캐나다' },
-  { code: 'DE', name: '독일' },
-  { code: 'GB', name: '영국' },
-  { code: 'KR', name: '한국' },
-  { code: 'NZ', name: '뉴질랜드' },
-  { code: 'SG', name: '싱가포르' },
-  { code: 'US', name: '미국' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'US', name: 'United States' },
 ]
 
 export default function LegalPage() {
@@ -24,7 +22,7 @@ export default function LegalPage() {
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // 국가 선택 시 카테고리 불러오기
+  // Fetch categories on country change
   useEffect(() => {
     if (!country) {
       setCategoryList([])
@@ -45,7 +43,7 @@ export default function LegalPage() {
     fetchCategories()
   }, [country])
 
-  // 카테고리 선택 시 법률 내용 불러오기
+  // Fetch law content on category change
   useEffect(() => {
     if (!country || !category) {
       setContent('')
@@ -64,31 +62,31 @@ export default function LegalPage() {
 
   return (
     <div style={{ maxWidth: 500, margin: '60px auto' }}>
-      <h1 style={{ fontWeight: 'bold', fontSize: 28 }}>AI Legal 법령 검색</h1>
-      <div style={{ margin: '24px 0 12px 0' }}>국가</div>
+      <h1 style={{ fontWeight: 'bold', fontSize: 28 }}>AI Legal Statute Search</h1>
+      <div style={{ margin: '24px 0 12px 0' }}>Country</div>
       <select
         style={{ width: '100%', height: 36, fontSize: 16 }}
         value={country}
         onChange={e => setCountry(e.target.value)}
       >
-        <option value="">국가를 선택하세요</option>
+        <option value="">Select a country</option>
         {COUNTRY_LIST.map(c => (
           <option key={c.code} value={c.code}>{c.name}</option>
         ))}
       </select>
-      <div style={{ margin: '24px 0 12px 0' }}>법 카테고리</div>
+      <div style={{ margin: '24px 0 12px 0' }}>Law Category</div>
       <select
         style={{ width: '100%', height: 36, fontSize: 16 }}
         value={category}
         onChange={e => setCategory(e.target.value)}
         disabled={!categoryList.length}
       >
-        <option value="">법 카테고리를 선택하세요</option>
+        <option value="">Select a law category</option>
         {categoryList.map(c => (
           <option key={c} value={c}>{c}</option>
         ))}
       </select>
-      {loading && <div style={{ color: '#0070f3', marginTop: 20 }}>로딩 중...</div>}
+      {loading && <div style={{ color: '#0070f3', marginTop: 20 }}>Loading...</div>}
       {content && (
         <div
           style={{

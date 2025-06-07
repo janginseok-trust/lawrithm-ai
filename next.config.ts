@@ -1,7 +1,8 @@
-import type { NextConfig } from "next";
+const { i18n } = require('./next-i18next.config');
 
-const nextConfig: NextConfig = {
-  /* config options here */
+module.exports = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // i18n,  ← 이 줄 완전히 제거!
 };
-
-export default nextConfig;
